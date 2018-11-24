@@ -19,4 +19,8 @@ server {
     location /media/ {
         alias       /srv/project/.media/;
     }
+
+    location /static/ {
+        alias      /srv/project/.static/;
+    }
 }

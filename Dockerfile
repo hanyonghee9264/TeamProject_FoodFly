@@ -6,6 +6,7 @@ COPY            ./  /srv/project
 WORKDIR         /srv/project
 
 WORKDIR         /srv/project/app
+RUN             python3 manage.py collectstatic --noinput
 
 RUN         rm -rf  /etc/nginx/sites-available/* && \
             rm -rf  /etc/nginx/sites-enabled/* && \
