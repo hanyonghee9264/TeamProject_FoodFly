@@ -1,9 +1,13 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.hashers import get_hasher
+from django.utils.crypto import get_random_string
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
 
 User = get_user_model()
+UNUSABLE_PASSWORD_PREFIX = '!'  # This will never be a valid encoded hash
+UNUSABLE_PASSWORD_SUFFIX_LENGTH = 40  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,6 +21,29 @@ class UserSerializer(serializers.ModelSerializer):
             'img_profile',
             'phone',
         )
+
+
+class UserRegisterSerializer(UserSerializer):
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + (
+            'password',
+        )
+
+    # def save(self):
+    #     username = self.validated_data['username']
+    #     password = self.validated_data['password']
+    #     first_name = self.validated_data['first_name']
+    #     last_name = self.validated_data['last_name']
+    #     img_profile = self.validated_data['img_profile']
+    #     phone = self.validated_data['phone']
+    #     User.objects.create(
+    #         username=username,
+    #         password=password,
+    #         first_name=first_name,
+    #         last_name=last_name,
+    #         img_profile=img_profile,
+    #         phone=phone,
+    #     )
 
 
 class AuthTokenSerializer(serializers.Serializer):
