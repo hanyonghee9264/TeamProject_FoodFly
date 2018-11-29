@@ -33,6 +33,7 @@ AUTH_USER_MODEL = 'members.User'
 # Application definition
 INSTALLED_APPS = [
     'members.apps.MembersConfig',
+    'store.apps.StoreConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
