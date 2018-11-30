@@ -41,22 +41,28 @@ class Store(models.Model):
         verbose_name = '상점'
         verbose_name_plural = f'{verbose_name} 목록'
 
-#
-# class Food(models.Model):
-#     name = models.CharField(verbose_name='음식이름', max_length=50)
-#     img_profile = models.ImageField(verbose_name='음식이미지', upload_to='food', blank=True)
-#     price = models.PositiveIntegerField(verbose_name='가격', default=0)
-#     stock = models.PositiveIntegerField(verbose_name='수량', default=0)
-#     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
-#     store = models.ForeignKey(
-#         Store,
-#         verbose_name='음식점',
-#         on_delete=models.CASCADE,
-#     )
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         verbose_name = '음식'
-#         verbose_name_plural = f'{verbose_name} 목록'
+
+class Food(models.Model):
+    name = models.CharField(verbose_name='음식이름', max_length=50)
+    img_profile = models.ImageField(verbose_name='음식이미지', upload_to='food', blank=True)
+    price = models.PositiveIntegerField(verbose_name='가격', default=0)
+    stock = models.PositiveIntegerField(verbose_name='수량', default=0)
+    created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
+    modified_at = models.DateTimeField(verbose_name='수정일', auto_now=True)
+    store = models.ForeignKey(
+        Store,
+        verbose_name='음식점',
+        on_delete=models.CASCADE,
+    )
+    set_menu = models.BooleanField(verbose_name='세트', default=False)
+    food_info = models.TextField(verbose_name='음식정보', blank=True)
+
+    def __str__(self):
+        return '{name}::{price}원'.format(
+            name=self.name,
+            price=self.price,
+        )
+
+    class Meta:
+        verbose_name = '음식'
+        verbose_name_plural = f'{verbose_name} 목록'
