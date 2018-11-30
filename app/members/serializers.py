@@ -1,6 +1,4 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.hashers import get_hasher
-from django.utils.crypto import get_random_string
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
@@ -16,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             'pk',
             'username',
+            'nickname',
             'first_name',
             'last_name',
             'img_profile',
@@ -32,10 +31,12 @@ class UserRegisterSerializer(UserSerializer):
     def save(self):
         username = self.validated_data['username']
         password = self.validated_data['password']
+        nickname = self.validated_data['nickname']
         phone = self.validated_data['phone']
         User.objects.create_user(
             username=username,
             password=password,
+            nickname=nickname,
             phone=phone,
         )
 
