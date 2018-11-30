@@ -29,21 +29,15 @@ class UserRegisterSerializer(UserSerializer):
             'password',
         )
 
-    # def save(self):
-    #     username = self.validated_data['username']
-    #     password = self.validated_data['password']
-    #     first_name = self.validated_data['first_name']
-    #     last_name = self.validated_data['last_name']
-    #     img_profile = self.validated_data['img_profile']
-    #     phone = self.validated_data['phone']
-    #     User.objects.create(
-    #         username=username,
-    #         password=password,
-    #         first_name=first_name,
-    #         last_name=last_name,
-    #         img_profile=img_profile,
-    #         phone=phone,
-    #     )
+    def save(self):
+        username = self.validated_data['username']
+        password = self.validated_data['password']
+        phone = self.validated_data['phone']
+        User.objects.create_user(
+            username=username,
+            password=password,
+            phone=phone,
+        )
 
 
 class AuthTokenSerializer(serializers.Serializer):
