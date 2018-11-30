@@ -8,7 +8,7 @@ from .serializers import StoreSerializer
 
 class StoreList(APIView):
     def get(self, request):
-        store = Store.objects.all()
+        store = Store.objects.select_related('owner').prefetch_related('food_set')
         serializer = StoreSerializer(store, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -10,6 +10,7 @@ ALLOWED_HOSTS = secrets['ALLOWED_HOSTS']
 # Application definition
 INSTALLED_APPS += [
     'django_extensions',
+    'debug_toolbar',
 ]
 
 # Database
@@ -21,3 +22,11 @@ DATABASES = secrets['DATABASES']
 # AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']
 # AWS_SECRET_ACCESS_KEY = secrets['AWS_SECRET_ACCESS_KEY']
 # AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
+
+# django toolbar
+MIDDLEWARE += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
