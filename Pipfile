@@ -10,6 +10,8 @@ django = "*"
 django-storages = "*"
 pillow = "*"
 djangorestframework = "*"
+"urllib3" = "==1.24.1"
+requests = "*"
 
 [dev-packages]
 awsebcli = "*"
