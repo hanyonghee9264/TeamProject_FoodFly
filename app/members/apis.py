@@ -19,6 +19,10 @@ class UserRegister(APIView):
 
 
 class AuthToken(APIView):
+    permission_classes = (
+        permissions.AllowAny,
+    )
+
     def post(self, request):
         serializer = AuthTokenSerializer(data=request.data)
         if serializer.is_valid():

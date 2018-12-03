@@ -45,6 +45,10 @@ class CartItem(models.Model):
         null=True,
     )
 
+    @property
+    def total_price(self):
+        return self.quantity * self.food.price
+
     class Meta:
         verbose_name = '아이템'
         verbose_name_plural = f'{verbose_name} 목록'

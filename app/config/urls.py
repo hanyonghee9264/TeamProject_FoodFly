@@ -23,10 +23,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls')),
     path('store/', include('store.urls')),
+    path('cart/', include('orders.urls')),
 ]
 
 
-urlpatterns += static (
+urlpatterns += static(
     prefix=settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT,
 )
