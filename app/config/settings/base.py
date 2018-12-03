@@ -32,6 +32,7 @@ AUTH_USER_MODEL = 'members.User'
 
 # Application definition
 INSTALLED_APPS = [
+    'corsheaders',
     'members.apps.MembersConfig',
     'store.apps.StoreConfig',
 
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'config.middleware.CORSMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
