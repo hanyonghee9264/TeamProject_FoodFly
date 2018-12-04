@@ -1,6 +1,4 @@
 from rest_framework import serializers
-
-from store.models import Food
 from store.serializers import FoodSerializer
 from .models.cart import Cart, CartItem
 from .models.order import Order
@@ -27,13 +25,17 @@ class CartItemSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validate_data):
-        food = Food.objects.get(pk=self.context['food_pk'])
-        c = CartItem.objects.create(
-            cart=validate_data['cart'],
+        # food = Food.objects.get(pk=self.context['food_pk'])
+        cart = validate_data['cart']
+        food = self.context['food']
+        if CartItem.objects.filter(cart=cart, food=food).exists():
+            raise serializers.ValidationError('이미 존재하는 아이템입니다.')
+        item = CartItem.objects.create(
+            cart=cart,
             food=food,
             quantity=validate_data['quantity'],
         )
-        return c
+        return item
 
 
 class OrderSerializer(serializers.ModelSerializer):
