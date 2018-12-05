@@ -1,19 +1,7 @@
 {
     "_meta": {
         "hash": {
-<<<<<<< HEAD
-            "sha256": "aa8cabd5e43af1a6fbdc92aaf7cc5dda9b00a3e6bbfb46073d68750c5c95735b"
-=======
-<<<<<<< HEAD
-            "sha256": "eb84e9955a100fc086d032b11d65b05002206fe1b3c42ad97d51cc839d902f44"
-=======
-<<<<<<< HEAD
-            "sha256": "6b8f3253be420b65a6d4d5295056b9aeac7e188853046a14b951a0780b450060"
-=======
-            "sha256": "cea3530b1d0e478111492b2d2b7770c48c18b06db0c9a8c472001179a144b216"
->>>>>>> refs/remotes/origin/master
->>>>>>> origin/master
->>>>>>> origin/master
+            "sha256": "1f9c337ff542139d12f4d486034d8fc815a25f1965390e5e5db9c2e4a26f4bbb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -270,10 +258,6 @@
             "hashes": [
                 "sha256:1bbcc9273899e1b14ab4d00660ce5c6dc23d699a391e11f421e5dff2d3a7014b",
                 "sha256:bcc4ae773091ed632eaf4a6d5bc46c6409659ce138158ec11904a931b21bd8f8"
-<<<<<<< HEAD
-            ],
-            "version": "==1.12.59"
-=======
             ],
             "version": "==1.12.59"
         },
@@ -283,7 +267,6 @@
             ],
             "index": "pypi",
             "version": "==0.0.1"
->>>>>>> origin/master
         },
         "cached-property": {
             "hashes": [
