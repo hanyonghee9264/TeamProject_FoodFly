@@ -4,12 +4,16 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import AuthTokenSerializer, UserRegisterSerializer
+from .serializers import AuthTokenSerializer, UserRegisterSerializer, UserSerializer
 
 User = get_user_model()
 
 
 class UserRegister(APIView):
+    permission_classes = (
+        permissions.AllowAny,
+    )
+
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -19,8 +23,23 @@ class UserRegister(APIView):
 
 
 class AuthToken(APIView):
+    permission_classes = (
+        permissions.AllowAny,
+    )
+
     def post(self, request):
         serializer = AuthTokenSerializer(data=request.data)
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
         raise AuthenticationFailed()
+
+
+class Profile(APIView):
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
