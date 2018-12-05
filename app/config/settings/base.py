@@ -34,6 +34,7 @@ AUTH_USER_MODEL = 'members.User'
 INSTALLED_APPS = [
     'members.apps.MembersConfig',
     'store.apps.StoreConfig',
+    'orders.apps.OrdersConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -98,7 +99,11 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 
