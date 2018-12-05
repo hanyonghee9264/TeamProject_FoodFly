@@ -18,6 +18,9 @@ ipython = "*"
 django-extensions = "*"
 django-debug-toolbar = "*"
 jupyter = "*"
+selenium = "*"
+"bs4" = "*"
+parse = "*"
 
 [requires]
 python_version = "3.6"
