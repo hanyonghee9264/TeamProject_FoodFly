@@ -10,12 +10,9 @@ django = "*"
 django-storages = "*"
 pillow = "*"
 djangorestframework = "*"
-<<<<<<< HEAD
 "urllib3" = "==1.24.1"
 requests = "*"
-=======
 django-cors-headers = "*"
->>>>>>> refs/remotes/origin/master
 
 [dev-packages]
 awsebcli = "*"
