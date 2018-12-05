@@ -5,7 +5,12 @@ DEBUG = False
 
 secrets = json.load(open(os.path.join(SECRETS_DIR, 'production.json')))
 
-ALLOWED_HOSTS = secrets['ALLOWED_HOSTS']
+ALLOWED_HOSTS = [
+    '.elasticbeanstalk.com',
+    'foodfly.shop',
+    'www.foodfly.shop',
+    'api.foodfly.shop'
+]
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -65,6 +70,7 @@ LOGGING = {
         },
     }
 }
+
 
 # EC2 HealthCheck
 def is_ec2_linux():
