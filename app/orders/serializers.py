@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from members.serializers import UserSerializer
 from store.serializers import FoodSerializer
 from .models.cart import Cart, CartItem
 from .models.order import Order
@@ -39,13 +41,28 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Order
         fields = (
-            'pk'
+            'pk',
             'user',
             'shipping',
             'created_at',
             'payment_status',
             'cartitem_set',
         )
+        read_only_fields = ('cartitem_set',)
+
+    def create(self, validate_data):
+        user = self.context['request'].user
+        shipping = validate_data['shipping']
+        order = Order.objects.create(
+            user=user,
+            shipping=shipping,
+        )
+        cart = Cart.objects.get(user=user)
+        for item in cart.item.filter(is_ordered=False):
+            item.order = order
+        return order
