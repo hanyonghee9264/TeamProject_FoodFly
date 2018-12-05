@@ -1,7 +1,11 @@
 {
     "_meta": {
         "hash": {
+<<<<<<< HEAD
             "sha256": "6b8f3253be420b65a6d4d5295056b9aeac7e188853046a14b951a0780b450060"
+=======
+            "sha256": "cea3530b1d0e478111492b2d2b7770c48c18b06db0c9a8c472001179a144b216"
+>>>>>>> refs/remotes/origin/master
         },
         "pipfile-spec": 6,
         "requires": {
@@ -52,6 +56,14 @@
             ],
             "index": "pypi",
             "version": "==2.1.3"
+        },
+        "django-cors-headers": {
+            "hashes": [
+                "sha256:5545009c9b233ea7e70da7dbab7cb1c12afa01279895086f98ec243d7eab46fa",
+                "sha256:c4c2ee97139d18541a1be7d96fe337d1694623816d83f53cb7c00da9b94acae1"
+            ],
+            "index": "pypi",
+            "version": "==2.4.0"
         },
         "django-storages": {
             "hashes": [
