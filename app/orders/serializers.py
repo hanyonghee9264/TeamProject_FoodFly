@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from members.serializers import UserSerializer
@@ -55,6 +56,7 @@ class OrderSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('cartitem_set',)
 
+    @transaction.atomic
     def create(self, validate_data):
         user = self.context['request'].user
         shipping = validate_data['shipping']
@@ -65,4 +67,5 @@ class OrderSerializer(serializers.ModelSerializer):
         cart = Cart.objects.get(user=user)
         for item in cart.item.filter(is_ordered=False):
             item.order = order
+            item.save()
         return order
