@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 # DJANGO CORS
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
+    'status-404.netlify.com',
 )
 
 MIDDLEWARE = [
