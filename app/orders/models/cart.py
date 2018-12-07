@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from store.models import Food
+from store.models.food import Food
 from .order import Order
 
 User = get_user_model()

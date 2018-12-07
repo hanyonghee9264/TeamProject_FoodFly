@@ -1,6 +1,6 @@
 from rest_framework import serializers
-
-from .models import Store, Food
+from .models.food import Food
+from .models.store import Store
 
 
 class FoodSerializer(serializers.ModelSerializer):
