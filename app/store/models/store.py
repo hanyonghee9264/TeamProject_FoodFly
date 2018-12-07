@@ -37,7 +37,7 @@ class Store(models.Model):
 
     def __str__(self):
         return '{category}::{name}'.format(
-            category=self.store_category,
+            category=self.category,
             name=self.name,
         )
 
@@ -56,5 +56,5 @@ class StoreImage(models.Model):
     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
 
     class Meta:
-        verbose_name = '상점이미지',
+        verbose_name = '상점이미지'
         verbose_name_plural = f'{verbose_name} 목록'
