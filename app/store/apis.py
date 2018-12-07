@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models.store import Store
-from .serializers import StoreSerializer
+from .serializers import StoreSerializer, StoreDetailSerializer
 
 
 class StoreList(APIView):
@@ -12,7 +12,7 @@ class StoreList(APIView):
     )
 
     def get(self, request):
-        store = Store.objects.select_related('owner').prefetch_related('food_set')
+        store = Store.objects.select_related('category', 'owner').prefetch_related('storeimage_set')
         serializer = StoreSerializer(store, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -23,6 +23,6 @@ class StoreDetail(APIView):
     )
 
     def get(self, request, pk):
-        store = Store.objects.get(pk=pk)
-        serializer = StoreSerializer(store)
+        store = Store.objects.prefetch_related('storeimage_set').get(pk=pk)
+        serializer = StoreDetailSerializer(store)
         return Response(serializer.data, status=status.HTTP_200_OK)
