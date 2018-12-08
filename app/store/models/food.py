@@ -29,7 +29,7 @@ class Food(models.Model):
     stock = models.PositiveIntegerField(verbose_name='수량', default=0)
     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
     modified_at = models.DateTimeField(verbose_name='수정일', auto_now=True)
-    set_menu = models.BooleanField(verbose_name='세트', default=False)
+    has_side_dishes = models.BooleanField(verbose_name='사이드메뉴', default=False)
     food_info = models.TextField(verbose_name='음식정보', blank=True)
 
     def __str__(self):
@@ -50,7 +50,6 @@ class FoodImage(models.Model):
         verbose_name='음식',
         on_delete=models.CASCADE,
     )
-    has_side_dishes = models.BooleanField(verbose_name='사이드메뉴', default=False)
     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
 
     class Meta:

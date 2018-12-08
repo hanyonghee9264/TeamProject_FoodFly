@@ -1,8 +1,19 @@
 from rest_framework import serializers
 
 from members.serializers import UserSerializer
-from .models.food import Food, FoodCategory, FoodImage
+from .models.food import Food, FoodCategory, FoodImage, SideDishes
 from .models.store import Store, StoreCategory, StoreImage
+
+
+class SideDishSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SideDishes
+        fields = (
+            'pk',
+            'name',
+            'price',
+            'is_required',
+        )
 
 
 class FoodImageSerializer(serializers.ModelSerializer):
@@ -17,6 +28,7 @@ class FoodImageSerializer(serializers.ModelSerializer):
 # 음식 데이터를 위한 Serializer
 class FoodSerializer(serializers.ModelSerializer):
     foodimage_set = FoodImageSerializer(many=True)
+    sidedishes_set = SideDishSerializer(many=True)
 
     def get_foodimage_set(self, obj):
         images = FoodImage.objects.select_related('food').filter(food=obj)
@@ -29,9 +41,10 @@ class FoodSerializer(serializers.ModelSerializer):
             'name',
             'price',
             'stock',
-            'set_menu',
+            'has_side_dishes',
             'food_info',
             'foodimage_set',
+            'sidedishes_set',
         )
 
 
