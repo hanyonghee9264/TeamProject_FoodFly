@@ -1,39 +1,104 @@
 from rest_framework import serializers
 
-from .models import Store, Food
+from members.serializers import UserSerializer
+from .models.food import Food, FoodCategory, FoodImage
+from .models.store import Store, StoreCategory, StoreImage
 
 
+class FoodImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FoodImage
+        fields = (
+            'location',
+            'created_at',
+        )
+
+
+# 음식 데이터를 위한 Serializer
 class FoodSerializer(serializers.ModelSerializer):
+    foodimage_set = FoodImageSerializer(many=True)
+
+    def get_foodimage_set(self, obj):
+        images = FoodImage.objects.select_related('food').filter(food=obj)
+        return FoodImageSerializer(images, many=True)
+
     class Meta:
         model = Food
         fields = (
             'pk',
             'name',
-            'img_profile',
             'price',
             'stock',
-            'store',
             'set_menu',
             'food_info',
+            'foodimage_set',
         )
 
 
-class StoreSerializer(serializers.ModelSerializer):
+# 식당에 있는 메뉴 Serializer
+class FoodCategorySerializer(serializers.ModelSerializer):
     food_set = FoodSerializer(many=True)
+
+    class Meta:
+        model = FoodCategory
+        fields = (
+            'name',
+            'store',
+            'food_set',
+        )
+
+
+# 식당의 범주 Serializer
+class StoreCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoreCategory
+        fields = (
+            'name',
+        )
+
+
+class StoreImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoreImage
+        fields = (
+            'location',
+            'created_at',
+        )
+
+
+# 식당 데이터를 위한 Serializer
+class StoreSerializer(serializers.ModelSerializer):
+    owner = UserSerializer()
+    category = StoreCategorySerializer()
+    storeimage_set = StoreImageSerializer(many=True)
 
     class Meta:
         model = Store
         fields = (
             'pk',
-            'store_category',
             'name',
-            'img_profile',
             'store_info',
             'origin_info',
-            'created_at',
             'owner',
             'least_cost',
             'takeout',
             'fee',
-            'food_set',
+            'storeimage_set',
+            'category',
+        )
+        read_only_fields = ('owner', 'category',)
+
+
+# 식당에 있는 음식과 음식 메뉴를 위한 Serializer
+class StoreDetailSerializer(StoreSerializer):
+    menu = serializers.SerializerMethodField(read_only=True)
+
+    # 식당에 있는 메뉴의 음식들을 꺼내오기 위한 함수
+    def get_menu(self, obj):
+        category = FoodCategory.objects.filter(store=obj).prefetch_related('food_set')
+        return FoodCategorySerializer(category, many=True).data
+
+    class Meta(StoreSerializer.Meta):
+        fields = StoreSerializer.Meta.fields + (
+            'menu',
         )

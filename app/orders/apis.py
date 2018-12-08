@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 
+from store.models.food import Food
 from .models.order import Order
-from store.models import Food
+
 from .models.cart import Cart, CartItem
 from .serializers import CartItemSerializer, OrderSerializer
 
