@@ -55,3 +55,13 @@ class FoodImage(models.Model):
     class Meta:
         verbose_name = '음식사진'
         verbose_name_plural = f'{verbose_name} 목록'
+
+
+class SideDishes(models.Model):
+    name = models.CharField(verbose_name='사이드메뉴이름', max_length=50)
+    price = models.PositiveIntegerField(verbose_name='가격', default=0)
+    food = models.ForeignKey(
+        Food,
+        on_delete=models.CASCADE,
+        verbose_name='음식'
+    )
