@@ -50,6 +50,7 @@ class FoodImage(models.Model):
         verbose_name='음식',
         on_delete=models.CASCADE,
     )
+    has_side_dishes = models.BooleanField(verbose_name='사이드메뉴', default=False)
     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
 
     class Meta:
@@ -60,8 +61,16 @@ class FoodImage(models.Model):
 class SideDishes(models.Model):
     name = models.CharField(verbose_name='사이드메뉴이름', max_length=50)
     price = models.PositiveIntegerField(verbose_name='가격', default=0)
+    is_required = models.BooleanField(verbose_name='필수선택', default=False)
     food = models.ForeignKey(
         Food,
         on_delete=models.CASCADE,
         verbose_name='음식'
     )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = '사이드메뉴'
+        verbose_name_plural = f'{verbose_name} 목록'
