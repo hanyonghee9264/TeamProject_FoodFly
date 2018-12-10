@@ -21,6 +21,7 @@ class CartItemSerializer(serializers.ModelSerializer):
             'options',
             'total_price',
         )
+        read_only_fields = ('options',)
 
     @transaction.atomic
     def create(self, validate_data):
@@ -78,13 +79,15 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     item = CartItemSerializer(many=True)
-    # payment = serializers.SerializerMethodField()
+    payment = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
         fields = (
             'user',
             'item',
-            # 'payment',
+            'payment',
         )
 
+    def get_payment(self, obj):
+        return obj.payment

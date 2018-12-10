@@ -16,6 +16,13 @@ class Cart(models.Model):
     def __str__(self):
         return f'{self.user.username}::cart'
 
+    @property
+    def payment(self):
+        payment = 0
+        for item in self.item.all():
+            payment += item.total_price
+        return payment
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(
