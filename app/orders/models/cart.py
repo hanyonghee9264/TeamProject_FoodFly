@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from store.models.food import Food
+from store.models.food import Food, SideDishes
 from .order import Order
 
 User = get_user_model()
@@ -44,10 +44,18 @@ class CartItem(models.Model):
         blank=True,
         null=True,
     )
+    options = models.ManyToManyField(
+        SideDishes,
+        related_name='option',
+        related_query_name='options',
+    )
 
     @property
     def total_price(self):
-        return self.quantity * self.food.price
+        price = self.food.price
+        for item in self.options.all():
+            price += item.price
+        return self.quantity * price
 
     class Meta:
         verbose_name = '아이템'
