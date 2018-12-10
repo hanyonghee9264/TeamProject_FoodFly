@@ -5,7 +5,7 @@ server {
 server {
     listen 80;
 
-    server_name localhost *.elasticbeanstalk.com www.foodfly.shop api.foodfly.shop foodfly.shop;
+    server_name www.foodfly.shop api.foodfly.shop foodfly.shop *.elasticbeanstalk.com;
 
     charset utf-8;
 
