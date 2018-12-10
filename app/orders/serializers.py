@@ -28,7 +28,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         cart = validate_data['cart']
         food = self.context['food']
 
-        if CartItem.objects.filter(cart=cart, food=food).exists():
+        if CartItem.objects.filter(cart=cart, food=food, is_ordered=False).exists():
             raise serializers.ValidationError('이미 존재하는 아이템입니다.')
 
         item = CartItem.objects.create(
@@ -49,6 +49,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    cartitem_set = CartItemSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -60,7 +61,6 @@ class OrderSerializer(serializers.ModelSerializer):
             'payment_status',
             'cartitem_set',
         )
-        read_only_fields = ('cartitem_set',)
 
     @transaction.atomic
     def create(self, validate_data):
@@ -73,12 +73,15 @@ class OrderSerializer(serializers.ModelSerializer):
         cart = Cart.objects.get(user=user)
         for item in cart.item.filter(is_ordered=False):
             item.order = order
+            item.is_ordered = True
             item.save()
+        else:
+            raise serializers.ValidationError('장바구니에 아이템이 없습니다.')
         return order
 
 
 class CartSerializer(serializers.ModelSerializer):
-    item = CartItemSerializer(many=True)
+    item = serializers.SerializerMethodField()
     payment = serializers.SerializerMethodField()
 
     class Meta:
@@ -88,6 +91,10 @@ class CartSerializer(serializers.ModelSerializer):
             'item',
             'payment',
         )
+
+    def get_item(self, obj):
+        item = obj.item.filter(is_ordered=False)
+        return CartItemSerializer(item, many=True).data
 
     def get_payment(self, obj):
         return obj.payment

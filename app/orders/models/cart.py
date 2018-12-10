@@ -20,7 +20,8 @@ class Cart(models.Model):
     def payment(self):
         payment = 0
         for item in self.item.all():
-            payment += item.total_price
+            if not item.is_ordered:
+                payment += item.total_price
         return payment
 
 
