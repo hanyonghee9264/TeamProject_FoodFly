@@ -4,7 +4,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import AuthTokenSerializer, UserRegisterSerializer, UserSerializer
+from .serializers import AuthTokenSerializer, UserRegisterSerializer, UserSerializer, FacebookSerializer
 
 User = get_user_model()
 
@@ -43,3 +43,12 @@ class Profile(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FacebookAuthToken(APIView):
+    def post(self, request):
+        serializer = FacebookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
