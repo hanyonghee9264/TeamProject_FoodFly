@@ -32,12 +32,10 @@ class UserRegisterSerializer(UserSerializer):
         username = self.validated_data['username']
         password = self.validated_data['password']
         nickname = self.validated_data['nickname']
-        phone = self.validated_data['phone']
         User.objects.create_user(
             username=username,
             password=password,
             nickname=nickname,
-            phone=phone,
         )
 
 
