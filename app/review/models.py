@@ -21,6 +21,7 @@ class Review(models.Model):
     store = models.ForeignKey(
         Store,
         verbose_name='상점',
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -34,6 +35,7 @@ class ReviewImage(models.Model):
         Review,
         verbose_name='리뷰',
         on_delete=models.SET_NULL,
+        null=True,
     )
 
     class Meta:
