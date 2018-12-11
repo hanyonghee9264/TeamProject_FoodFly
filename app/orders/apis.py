@@ -106,6 +106,9 @@ class OrderList(APIView):
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def patch(self, request):
+        pass
+
     def delete(self, request):
         order = Order.objects.get(pk=request.data.get('order_pk'))
         order.delete()

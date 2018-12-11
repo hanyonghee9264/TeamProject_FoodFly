@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
+from .backends import FacebookBackend
 
 
 User = get_user_model()
@@ -52,6 +53,33 @@ class AuthTokenSerializer(serializers.Serializer):
         user = authenticate(username=username, password=password)
         if user is None:
             raise AuthenticationFailed('아이디 또는 비밀번호가 일치하지 않습니다.')
+        self.user = user
+        return data
+
+    def to_representation(self, instance):
+        token = Token.objects.get_or_create(user=self.user)[0]
+        data = {
+            'user': UserSerializer(self.user).data,
+            'token': token.key,
+        }
+        return data
+
+
+class FacebookSerializer(serializers.Serializer):
+    facebook_id = serializers.CharField(max_length=50)
+    access_token = serializers.CharField(max_length=50)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+
+    def validate(self, data):
+        facebook_id = data['facebook_id']
+        access_token = data['access_token']
+        if User.objects.filter(username=facebook_id).exists():
+            user = User.objects.get(username=facebook_id)
+        else:
+            user = FacebookBackend.get_user_by_access_token(access_token)
         self.user = user
         return data
 
