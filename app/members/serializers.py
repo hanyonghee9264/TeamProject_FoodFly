@@ -2,6 +2,9 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
+
+from address.models import Address
+from address.serializers import AddressInfoSerializer
 from .backends import FacebookBackend
 
 
@@ -9,6 +12,8 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    address = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -19,7 +24,15 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'img_profile',
             'phone',
+            'address'
         )
+
+    def get_address(self, obj):
+        if not Address.objects.filter(user=obj).exists():
+            raise serializers.ValidationError('주소가 없습니다. 주소를 입력해주세요.')
+        else:
+            address = Address.objects.get(user=obj)
+            return AddressInfoSerializer(address).data
 
 
 class UserRegisterSerializer(UserSerializer):
