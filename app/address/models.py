@@ -9,7 +9,7 @@ User = get_user_model()
 class Address(models.Model):
     old_address = models.CharField(verbose_name='지번주소', max_length=100)
     address = models.CharField(verbose_name='도로명 주소', max_length=100)
-    detail_address = models.CharField(verbose_name='상세주소', max_length=100)
+    detail_address = models.CharField(verbose_name='상세주소', max_length=100, blank=True)
     # 위도, 경도 (정수 부분 4자리, 소수점 이하 자리수 6자리)
     # lat(latitude): 위도 lng(longitude): 경도
     lat = models.DecimalField(verbose_name='위도', max_digits=10, decimal_places=6)
