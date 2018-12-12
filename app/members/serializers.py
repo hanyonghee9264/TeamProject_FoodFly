@@ -3,12 +3,17 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
 
+from address.models import Address
+from address.serializers import AddressInfoSerializer
+from .backends import FacebookBackend
+
+
 User = get_user_model()
-UNUSABLE_PASSWORD_PREFIX = '!'  # This will never be a valid encoded hash
-UNUSABLE_PASSWORD_SUFFIX_LENGTH = 40  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
 
 
 class UserSerializer(serializers.ModelSerializer):
+    address = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -19,7 +24,15 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'img_profile',
             'phone',
+            'address'
         )
+
+    def get_address(self, obj):
+        if not Address.objects.filter(user=obj).exists():
+            raise serializers.ValidationError('주소가 없습니다. 주소를 입력해주세요.')
+        else:
+            address = Address.objects.get(user=obj)
+            return AddressInfoSerializer(address).data
 
 
 class UserRegisterSerializer(UserSerializer):
@@ -53,6 +66,33 @@ class AuthTokenSerializer(serializers.Serializer):
         user = authenticate(username=username, password=password)
         if user is None:
             raise AuthenticationFailed('아이디 또는 비밀번호가 일치하지 않습니다.')
+        self.user = user
+        return data
+
+    def to_representation(self, instance):
+        token = Token.objects.get_or_create(user=self.user)[0]
+        data = {
+            'user': UserSerializer(self.user).data,
+            'token': token.key,
+        }
+        return data
+
+
+class FacebookSerializer(serializers.Serializer):
+    facebook_id = serializers.CharField(max_length=50)
+    access_token = serializers.CharField(max_length=50)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+
+    def validate(self, data):
+        facebook_id = data['facebook_id']
+        access_token = data['access_token']
+        if User.objects.filter(username=facebook_id).exists():
+            user = User.objects.get(username=facebook_id)
+        else:
+            user = FacebookBackend.get_user_by_access_token(access_token)
         self.user = user
         return data
 
