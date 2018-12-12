@@ -29,10 +29,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_address(self, obj):
         if not Address.objects.filter(user=obj).exists():
-            raise serializers.ValidationError('주소가 없습니다. 주소를 입력해주세요.')
+            return
         else:
-            address = Address.objects.get(user=obj)
-            return AddressInfoSerializer(address).data
+            address = Address.objects.filter(user=obj)
+            return AddressInfoSerializer(address, many=True).data
 
 
 class UserRegisterSerializer(UserSerializer):
