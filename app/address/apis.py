@@ -33,5 +33,8 @@ class UserAddressAPIView(APIView):
     def delete(self, request):
         address_pk = request.data.get('address_pk')
         user = request.user
-        user.is_host_address_set.get(pk=address_pk).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if user.is_host_address_set.filter(pk=address_pk).exists():
+            user.is_host_address_set.get(pk=address_pk).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
