@@ -5,7 +5,7 @@ from review.models import Review, ReviewImage, Comment
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer(many=True)
+    user = UserSerializer()
 
     class Meta:
         model = Review
@@ -28,6 +28,8 @@ class ReviewImageSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Comment
         fields = (
