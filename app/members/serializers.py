@@ -1,3 +1,4 @@
+import pytz
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -76,21 +77,30 @@ class AuthTokenSerializer(serializers.Serializer):
 
 class FacebookSerializer(serializers.Serializer):
     facebook_id = serializers.CharField(max_length=50)
-    access_token = serializers.CharField(max_length=50)
+    name = serializers.CharField(max_length=50)
+    email = serializers.EmailField(max_length=50)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = None
 
-    def validate(self, data):
-        facebook_id = data['facebook_id']
-        access_token = data['access_token']
-        if User.objects.filter(username=facebook_id).exists():
-            user = User.objects.get(username=facebook_id)
+    def create(self, validate_data):
+        username = validate_data['facebook_id']
+        password = 'foodfly'
+        name = validate_data['name']
+        email = validate_data['email']
+
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
         else:
-            user = FacebookBackend.get_user_by_access_token(access_token)
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                first_name=name,
+                email=email,
+            )
         self.user = user
-        return data
+        return self.user
 
     def to_representation(self, instance):
         token = Token.objects.get_or_create(user=self.user)[0]

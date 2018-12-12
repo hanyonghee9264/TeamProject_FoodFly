@@ -46,6 +46,10 @@ class Profile(APIView):
 
 
 class FacebookAuthToken(APIView):
+    permission_classes = (
+        permissions.AllowAny,
+    )
+
     def post(self, request):
         serializer = FacebookSerializer(data=request.data)
         if serializer.is_valid():
