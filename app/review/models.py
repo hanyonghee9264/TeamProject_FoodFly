@@ -23,6 +23,8 @@ class Review(models.Model):
         verbose_name='상점',
         on_delete=models.CASCADE,
     )
+    created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
+    modified_at = models.DateTimeField(verbose_name='수정일', auto_now=True)
 
     class Meta:
         verbose_name = '리뷰'
@@ -37,6 +39,7 @@ class ReviewImage(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
 
     class Meta:
         verbose_name = '리뷰이미지'
@@ -55,6 +58,8 @@ class Comment(models.Model):
         verbose_name='리뷰',
         on_delete=models.CASCADE,
     )
+    created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
+    modified_at = models.DateTimeField(verbose_name='수정일', auto_now=True)
 
     class Meta:
         verbose_name = '사장님댓글'
