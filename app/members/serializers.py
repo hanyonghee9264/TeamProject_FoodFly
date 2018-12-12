@@ -41,6 +41,12 @@ class UserRegisterSerializer(UserSerializer):
             'password',
         )
 
+    def create(self, validate_data):
+        user = User.objects.create_user(
+            **validate_data,
+        )
+        return user
+
 
 class AuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=50)
