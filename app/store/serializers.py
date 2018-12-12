@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from address.models import Address
+from address.serializers import AddressInfoSerializer
 from members.serializers import UserSerializer
 from .models.food import Food, FoodCategory, FoodImage, SideDishes
 from .models.store import Store, StoreCategory, StoreImage
@@ -81,9 +83,10 @@ class StoreImageSerializer(serializers.ModelSerializer):
 
 # 식당 데이터를 위한 Serializer
 class StoreSerializer(serializers.ModelSerializer):
-    owner = UserSerializer()
+    # owner = UserSerializer()
     category = StoreCategorySerializer()
     storeimage_set = StoreImageSerializer(many=True)
+    address = serializers.SerializerMethodField()
 
     class Meta:
         model = Store
@@ -98,8 +101,15 @@ class StoreSerializer(serializers.ModelSerializer):
             'fee',
             'storeimage_set',
             'category',
+            'address',
         )
         read_only_fields = ('owner', 'category',)
+
+    def get_address(self, obj):
+        if not Address.objects.filter(store=obj).exists():
+            raise serializers.ValidationError('상점 주소를 입력해주세요.')
+        else:
+            return AddressInfoSerializer(Address.objects.get(store=obj)).data
 
 
 # 식당에 있는 음식과 음식 메뉴를 위한 Serializer
