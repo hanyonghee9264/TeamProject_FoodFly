@@ -107,7 +107,7 @@ class StoreSerializer(serializers.ModelSerializer):
 
     def get_address(self, obj):
         if not Address.objects.filter(store=obj).exists():
-            raise serializers.ValidationError('상점 주소를 입력해주세요.')
+            return
         else:
             return AddressInfoSerializer(Address.objects.get(store=obj)).data
 
