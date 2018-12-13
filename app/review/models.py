@@ -32,11 +32,12 @@ class Review(models.Model):
 
 
 class ReviewImage(models.Model):
-    location = models.ImageField(verbose_name='리뷰사진', upload_to='review', blank=True)
+    location = models.ImageField(verbose_name='리뷰사진', upload_to='review', blank=True, null=True)
     review = models.ForeignKey(
         Review,
         verbose_name='리뷰',
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
     )
     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)

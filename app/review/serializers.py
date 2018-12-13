@@ -2,20 +2,7 @@ from rest_framework import serializers
 
 from members.serializers import UserSerializer
 from review.models import Review, ReviewImage, Comment
-
-
-class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = Review
-        fields = (
-            'pk',
-            'content',
-            'rating',
-            'user',
-            'store',
-        )
+from store.serializers import StoreSerializer
 
 
 class ReviewImageSerializer(serializers.ModelSerializer):
@@ -27,8 +14,26 @@ class ReviewImageSerializer(serializers.ModelSerializer):
         )
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    reviewimage_set = ReviewImageSerializer(many=True, required=False)
+    store_set = StoreSerializer(required=False)
+
+    class Meta:
+        model = Review
+        fields = (
+            'pk',
+            'content',
+            'rating',
+            'store_set',
+            'reviewimage_set',
+        )
+        read_only_fields = (
+            'store',
+            'reviewimage_set',
+        )
+
+
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
 
     class Meta:
         model = Comment
