@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from rest_framework.compat import MaxValueValidator
 
-from members.serializers import UserSerializer
 from review.models import Review, ReviewImage, Comment
 from store.models.store import Store
-from store.serializers import StoreSerializer
 
 
 class ReviewImageSerializer(serializers.ModelSerializer):
@@ -12,7 +10,6 @@ class ReviewImageSerializer(serializers.ModelSerializer):
         model = ReviewImage
         fields = (
             'location',
-            'created_at',
         )
 
 
@@ -21,7 +18,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='name',
     )
-    reviewimage_set = ReviewImageSerializer(many=True, required=False)
+    reviewimage_set = ReviewImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Review
@@ -35,7 +32,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             'user',
-            'reviewimage_set',
         )
 
     def create(self, validate_data):
@@ -61,25 +57,25 @@ class CommentSerializer(serializers.ModelSerializer):
         )
 
 
-# class ReviewCreateSerializer(serializers.Serializer):
-#     content = serializers.CharField(max_length=100)
-#     rating = serializers.IntegerField(default=0, validators=[MaxValueValidator(5)])
-#     store = serializers.IntegerField()
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.review = None
-#
-#     def create(self, validate_data):
-#         store = Store.objects.get(pk=validate_data['store'])
-#         review = Review.objects.create(
-#             content=validate_data['content'],
-#             rating=validate_data['rating'],
-#             store=store,
-#             user=self.context['request'].user
-#         )
-#         self.review = review
-#         return review
-#
-#     def to_representation(self, instance):
-#         return ReviewSerializer(self.review).data
+class ReviewCreateSerializer(serializers.Serializer):
+    content = serializers.CharField(max_length=100)
+    rating = serializers.IntegerField(default=0, validators=[MaxValueValidator(5)])
+    store = serializers.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.review = None
+
+    def create(self, validate_data):
+        store = Store.objects.get(pk=validate_data['store'])
+        review = Review.objects.create(
+            content=validate_data['content'],
+            rating=validate_data['rating'],
+            store=store,
+            user=self.context['request'].user
+        )
+        self.review = review
+        return review
+
+    def to_representation(self, instance):
+        return ReviewSerializer(self.review).data

@@ -1,4 +1,5 @@
 from rest_framework import permissions, status, serializers
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -51,14 +52,10 @@ class ReviewList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
-        review_pk = request.data.get('pk')
-
-        if not review_pk:
-            raise serializers.ValidationError({'detail': 'pk값이 주어지지 않았습니다.'})
-        review = Review.objects.get(pk=review_pk)
+        review = get_object_or_404(Review, user=request.user, pk=request.data.get('review_pk'))
 
         if review.user != request.user:
             raise serializers.ValidationError({'detail': '해당 유저가 아닙니다.'})
 
-        review_pk.delete()
+        review.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
