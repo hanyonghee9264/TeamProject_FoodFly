@@ -6,6 +6,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from address.models import Address
 from address.serializers import AddressInfoSerializer
+from orders.models.cart import Cart
 from .backends import FacebookBackend
 
 
@@ -46,6 +47,7 @@ class UserRegisterSerializer(UserSerializer):
         user = User.objects.create_user(
             **validate_data,
         )
+        Cart.objects.create(user=user)
         return user
 
 
