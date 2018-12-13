@@ -9,7 +9,6 @@ class Review(models.Model):
     content = models.TextField(verbose_name='리뷰내용', blank=True)
     rating = models.PositiveIntegerField(
         verbose_name='별점',
-        null=True,
         default=0,
         validators=[MaxValueValidator(5)]
     )

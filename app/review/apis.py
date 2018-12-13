@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from review.models import Review
-from review.serializers import ReviewSerializer
+from review.serializers import ReviewSerializer, ReviewCreateSerializer
+from store.models.store import Store
 
 
 class ReviewList(APIView):
@@ -15,9 +16,20 @@ class ReviewList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        store_id = request.data.get('pk')
-        Review.objects.get(store_id=store_id)
-        serializer = ReviewSerializer(review, data=request.data)
+        store = Store.objects.get(pk=request.data.pop('store'))
+        serializer = ReviewSerializer(
+            data=request.data,
+            context={
+                'request': request,
+                'store': store,
+            }
+        )
+        # serializer = ReviewCreateSerializer(
+        #     data=request.data,
+        #     context={
+        #         'request': request,
+        #     }
+        # )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
