@@ -1,4 +1,4 @@
-import pytz
+
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -7,8 +7,6 @@ from rest_framework.exceptions import AuthenticationFailed
 from address.models import Address
 from address.serializers import AddressInfoSerializer
 from orders.models.cart import Cart
-from .backends import FacebookBackend
-
 
 User = get_user_model()
 
@@ -26,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'img_profile',
             'phone',
-            'address'
+            'address',
         )
 
     def get_address(self, obj):

@@ -35,6 +35,7 @@ class UserAddressAPIView(APIView):
         user = request.user
         if user.is_host_address_set.filter(pk=address_pk).exists():
             user.is_host_address_set.get(pk=address_pk).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            serializer = AddressInfoSerializer(Address.objects.filter(user=user), many=True)
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
