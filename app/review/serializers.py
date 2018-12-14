@@ -1,8 +1,17 @@
 from rest_framework import serializers
 from rest_framework.compat import MaxValueValidator
+from rest_framework.generics import get_object_or_404
 
 from review.models import Review, ReviewImage, Comment
 from store.models.store import Store
+
+class ReviewImageCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReviewImage
+        fields = (
+            'review',
+            'location',
+        )
 
 
 class ReviewImageSerializer(serializers.ModelSerializer):

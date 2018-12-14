@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from review.models import Review
-from review.serializers import ReviewSerializer, ReviewCreateSerializer
+from review.serializers import ReviewSerializer, ReviewCreateSerializer, ReviewImageSerializer, \
+    ReviewImageCreateSerializer
 from store.models.store import Store
+from store.serializers import StoreImageSerializer
 
 
 class ReviewList(APIView):
@@ -16,8 +18,9 @@ class ReviewList(APIView):
         serializer = ReviewSerializer(review, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
-        store = Store.objects.get(pk=request.data.pop('store'))
+    def post(self, request, format=None):
+        # store = Store.objects.get(pk=request.data.pop('store'))
+        store = Store.objects.get(pk=request.data['store'])
         serializer = ReviewSerializer(
             data=request.data,
             context={
@@ -25,12 +28,7 @@ class ReviewList(APIView):
                 'store': store,
             }
         )
-        # serializer = ReviewCreateSerializer(
-        #     data=request.data,
-        #     context={
-        #         'request': request,
-        #     }
-        # )
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -59,3 +57,12 @@ class ReviewList(APIView):
 
         review.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ReviewImageCreate(APIView):
+    def post(self, request, format=None):
+        serializer = ReviewImageCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

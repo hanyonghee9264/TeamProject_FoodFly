@@ -1,7 +1,8 @@
 from django.urls import path
 
-from review.apis import ReviewList
+from review.apis import ReviewList, ReviewImageCreate
 
 urlpatterns = [
-    path('list/', ReviewList.as_view()),
+    path('', ReviewList.as_view()),
+    path('image/', ReviewImageCreate.as_view())
 ]
