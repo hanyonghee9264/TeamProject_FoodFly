@@ -1,7 +1,5 @@
-from rest_framework import status, permissions
+from rest_framework import generics, permissions
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .models.store import Store
 from .serializers import StoreSerializer, StoreDetailSerializer
@@ -12,49 +10,27 @@ class CustomPaginator(PageNumberPagination):
     max_page_size = 1000
 
 
-class StoreList(APIView):
-    permission_classes = (
-        permissions.AllowAny,
-    )
-    queryset = Store.objects.select_related('category', 'owner').prefetch_related('storeimage_set')
+class StoreList(generics.ListCreateAPIView):
+    queryset = Store.objects.all()
     serializer_class = StoreSerializer
+    permission_classes = (permissions.AllowAny,)
     pagination_class = CustomPaginator
+    lookup_url_kwarg = 'category_pk'
 
-    def get(self, request):
-        page = self.paginate_queryset(self.queryset)
-        if page is not None:
-            serializer = self.serializer_class(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-    @property
-    def paginator(self):
-        if not hasattr(self, '_paginator'):
-            if self.pagination_class is None:
-                self._paginator = None
-            else:
-                self._paginator = self.pagination_class()
-        return self._paginator
-
-    def paginate_queryset(self, queryset):
-        if self.paginator is None:
-            return None
-        return self.paginator.paginate_queryset(
-            queryset,
-            self.request,
-            view=self
-        )
-
-    def get_paginated_response(self, data):
-        assert self.paginator is not None
-        return self.paginator.get_paginated_response(data)
+    def get_queryset(self):
+        category = self.kwargs['category_pk']
+        return Store.objects.filter(category=category).\
+            select_related('category', 'owner'). \
+            prefetch_related('storeimage_set', 'foodcategory_set', 'is_store_address_set')
 
 
-class StoreDetail(APIView):
-    permission_classes = (
-        permissions.AllowAny,
-    )
+class StoreDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = StoreDetailSerializer
+    permission_classes = (permissions.AllowAny,)
+    lookup_url_kwarg = 'store_pk'
 
-    def get(self, request, pk):
-        store = Store.objects.prefetch_related('storeimage_set').get(pk=pk)
-        serializer = StoreDetailSerializer(store)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_queryset(self):
+        store = self.kwargs['store_pk']
+        return Store.objects.filter(pk=store). \
+            select_related('category', 'owner'). \
+            prefetch_related('storeimage_set', 'foodcategory_set', 'is_store_address_set')

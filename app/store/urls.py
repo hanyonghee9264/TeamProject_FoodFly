@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 
 from .apis import StoreList, StoreDetail
 
 urlpatterns = [
-    path('list/', StoreList.as_view(),),
-    path('<int:pk>/', StoreDetail.as_view(),),
+    path('', StoreList.as_view(),),
+    path('<int:category_pk>/', StoreList.as_view(),),
+    path('<int:category_pk>/store/<int:store_pk>/', StoreDetail.as_view(),),
 ]
