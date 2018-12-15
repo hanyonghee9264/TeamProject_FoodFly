@@ -9,7 +9,8 @@ ALLOWED_HOSTS = [
     '.elasticbeanstalk.com',
     'foodfly.shop',
     'www.foodfly.shop',
-    'api.foodfly.shop'
+    'api.foodfly.shop',
+    'localhost',
 ]
 
 # Database
