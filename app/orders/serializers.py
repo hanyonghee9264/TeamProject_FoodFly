@@ -59,6 +59,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'created_at',
             'payment_status',
             'cartitem_set',
+            'payment',
         )
         read_only_fields = ('user',)
 
@@ -87,7 +88,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     item = serializers.SerializerMethodField()
-    payment = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
@@ -100,6 +100,3 @@ class CartSerializer(serializers.ModelSerializer):
     def get_item(self, obj):
         item = obj.item.filter(is_ordered=False)
         return CartItemSerializer(item, many=True).data
-
-    def get_payment(self, obj):
-        return obj.payment

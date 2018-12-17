@@ -16,3 +16,11 @@ class Order(models.Model):
     class Meta:
         verbose_name = '주문'
         verbose_name_plural = f'{verbose_name} 목록'
+
+    @property
+    def payment(self):
+        payment = 0
+        for item in self.cartitem_set.all():
+            if item.is_ordered:
+                payment += item.total_price
+        return payment
