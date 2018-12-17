@@ -2,6 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from members.serializers import UserSerializer
+from store.models.store import Store
 from store.serializers import FoodSerializer, SideDishSerializer
 from .models.cart import Cart, CartItem
 from .models.order import Order
@@ -48,17 +49,19 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    cartitem_set = CartItemSerializer(many=True, read_only=True)
+    store = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = (
             'pk',
             'user',
+            'phone',
             'shipping',
-            'created_at',
+            'comment',
+            'payment_option',
             'payment_status',
-            'cartitem_set',
+            'store',
             'payment',
         )
         read_only_fields = ('user',)
@@ -68,14 +71,21 @@ class OrderSerializer(serializers.ModelSerializer):
         queryset = qs.select_related('user').prefetch_related('cartitem_set')
         return queryset
 
+    def get_store(self, obj):
+        data =[]
+        for i in obj.cartitem_set.select_related('cart', 'food', 'order').prefetch_related('options'):
+            store = Store.objects.get(foodcategory__food__pk=i.food.pk)
+            total_price = i.total_price
+            info = {'store': store.name, 'total_price': total_price}
+            data.append(info)
+        return data
+
     @transaction.atomic
     def create(self, validate_data):
-
         user = self.context['request'].user
-        shipping = validate_data['shipping']
         order = Order.objects.create(
+            **validate_data,
             user=user,
-            shipping=shipping,
         )
         cart = Cart.objects.get(user=user)
         for item in cart.item.filter(is_ordered=False).select_related('cart', 'food', 'order').prefetch_related('options'):

@@ -83,36 +83,6 @@ class CartItemList(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class OrderList(APIView):
-#     permission_classes = (
-#         permissions.IsAuthenticatedOrReadOnly,
-#     )
-#
-#     def get(self, request):
-#         user = User.objects.get(username=request.user)
-#         order = user.order_set.filter(payment_status=False)
-#         serializer = OrderSerializer(order, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-#
-#     def post(self, request):
-#         serializer = OrderSerializer(
-#             data=request.data,
-#             context={
-#                 'request': request,
-#             }
-#         )
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#     def patch(self, request):
-#         pass
-#
-#     def delete(self, request):
-#         order = Order.objects.get(pk=request.data.get('order_pk'))
-#         order.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
 class OrderList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = OrderSerializer
