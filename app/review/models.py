@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
+from django.db.models import Avg
 
 from members.models import User
 from store.models.store import Store
@@ -28,6 +29,13 @@ class Review(models.Model):
     class Meta:
         verbose_name = '리뷰'
         verbose_name_plural = f'{verbose_name} 목록'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        star_rating = Review.objects.filter(store_id=self.store.pk).aggregate(Avg('rating'))
+        store_average = Store.objects.get(pk=self.store.pk)
+        store_average.rating_average = star_rating['rating__avg']
+        store_average.save()
 
 
 class ReviewImage(models.Model):
