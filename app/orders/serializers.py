@@ -48,8 +48,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    cartitem_set = CartItemSerializer(read_only=True)
+    cartitem_set = CartItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
@@ -61,9 +60,16 @@ class OrderSerializer(serializers.ModelSerializer):
             'payment_status',
             'cartitem_set',
         )
+        read_only_fields = ('user',)
+
+    @classmethod
+    def setup_eager_loading(cls, qs):
+        queryset = qs.select_related('user').prefetch_related('cartitem_set')
+        return queryset
 
     @transaction.atomic
     def create(self, validate_data):
+
         user = self.context['request'].user
         shipping = validate_data['shipping']
         order = Order.objects.create(
@@ -71,12 +77,11 @@ class OrderSerializer(serializers.ModelSerializer):
             shipping=shipping,
         )
         cart = Cart.objects.get(user=user)
-        for item in cart.item.filter(is_ordered=False):
+        for item in cart.item.filter(is_ordered=False).select_related('cart', 'food', 'order').prefetch_related('options'):
             item.order = order
             item.is_ordered = True
             item.save()
-        else:
-            raise serializers.ValidationError('장바구니에 아이템이 없습니다.')
+
         return order
 
 
