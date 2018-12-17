@@ -102,6 +102,7 @@ class StoreSerializer(serializers.ModelSerializer):
             'storeimage_set',
             'category',
             'address',
+            'rating_average',
         )
         read_only_fields = ('owner', 'category',)
 

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+
 User = get_user_model()
 
 
@@ -34,6 +35,7 @@ class Store(models.Model):
     least_cost = models.PositiveIntegerField(verbose_name='최소주문금액', default=0)
     takeout = models.BooleanField(verbose_name='테이크아웃', default=False)
     fee = models.PositiveIntegerField(verbose_name='배달팁', default=0)
+    rating_average = models.DecimalField(verbose_name='별점평균', blank=True, null=True, max_digits=5, decimal_places=1)
 
     def __str__(self):
         return '{category}::{name}'.format(
