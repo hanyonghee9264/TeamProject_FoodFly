@@ -20,8 +20,6 @@ class CartItemList(APIView):
 
     def get(self, request):
         cart = Cart.objects.get(user=request.user)
-        # items = cart.item.filter(is_ordered=False)
-        # serializer = CartItemSerializer(items, many=True)
         serializer = CartSerializer(cart)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
