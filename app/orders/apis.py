@@ -60,13 +60,11 @@ class CartItemList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request):
-        cart = Cart.objects.get(user=request.user)
-        food = Food.objects.get(pk=request.data.get('food_pk'))
-        item = CartItem.objects.get(
-            cart=cart,
-            food=food,
-        )
+
+class CartItemDetail(APIView):
+
+    def patch(self, request, pk):
+        item = CartItem.objects.get(pk=pk)
 
         serializer = CartItemSerializer(item, data=request.data, partial=True)
         if serializer.is_valid():
@@ -74,10 +72,9 @@ class CartItemList(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
-        cart = get_object_or_404(Cart, user=request.user)
-        food = get_object_or_404(Food, pk=request.data.get('food_pk'))
-        cart.item.filter(food=food).delete()
+    def delete(self, request, pk):
+        item = CartItem.objects.get(pk=pk)
+        item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

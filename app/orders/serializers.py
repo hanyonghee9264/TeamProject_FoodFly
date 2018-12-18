@@ -16,6 +16,7 @@ class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = (
+            'pk',
             'cart',
             'food',
             'quantity',
@@ -158,5 +159,3 @@ class CartSerializer(serializers.ModelSerializer):
             }
             data.append(info)
         return data
-
-
