@@ -3,6 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models.store import Store
 from .serializers import StoreSerializer, StoreDetailSerializer
+from rest_framework import filters
 
 
 class CustomPaginator(PageNumberPagination):
@@ -13,6 +14,8 @@ class CustomPaginator(PageNumberPagination):
 class StoreList(generics.ListCreateAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
     permission_classes = (permissions.AllowAny,)
     pagination_class = CustomPaginator
     lookup_url_kwarg = 'category_pk'

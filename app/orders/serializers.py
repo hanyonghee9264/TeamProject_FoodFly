@@ -65,6 +65,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'payment_status',
             'store',
             'payment',
+            'created_at',
         )
         read_only_fields = ('user',)
 
@@ -103,37 +104,37 @@ class OptionSerializer(serializers.RelatedField):
         return value.name
 
 
-# class CartItemInfoSerializer(serializers.ModelSerializer):
-#     store = serializers.SerializerMethodField()
-#     food = serializers.SerializerMethodField()
-#     options = OptionSerializer(many=True, read_only=True)
-#
-#     class Meta:
-#         model = CartItem
-#         fields = (
-#             'pk',
-#             'store',
-#             'food',
-#             'is_ordered',
-#             'options',
-#             'quantity',
-#             'total_price',
-#         )
-#
-#     def get_store(self, obj):
-#         return Store.objects.get(foodcategory__food__pk=obj.food.pk).name
-#
-#     def get_food(self, obj):
-#         return Food.objects.get(pk=obj.food.pk).name
-#
-#     def to_representation(self, instance):
-#         if not instance.is_ordered:
-#             return super().to_representation(instance)
+class CartItemInfoSerializer(serializers.ModelSerializer):
+    store = serializers.SerializerMethodField()
+    food = serializers.SerializerMethodField()
+    options = OptionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CartItem
+        fields = (
+            'pk',
+            'store',
+            'food',
+            'is_ordered',
+            'options',
+            'quantity',
+            'total_price',
+        )
+
+    def get_store(self, obj):
+        return Store.objects.get(foodcategory__food__pk=obj.food.pk).name
+
+    def get_food(self, obj):
+        return Food.objects.get(pk=obj.food.pk).name
+
+    def to_representation(self, instance):
+        if not instance.is_ordered:
+            return super().to_representation(instance)
 
 
 class CartSerializer(serializers.ModelSerializer):
-    # item = CartItemInfoSerializer(many=True, read_only=True)
-    item = serializers.SerializerMethodField()
+    item = CartItemInfoSerializer(many=True, read_only=True)
+    # item = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
@@ -143,19 +144,19 @@ class CartSerializer(serializers.ModelSerializer):
             'payment',
         )
 
-    def get_item(self, obj):
-        data = []
-        for i in obj.item.filter(is_ordered=False):
-            store = Store.objects.get(foodcategory__food__pk=i.food.pk)
-            food = Food.objects.get(pk=i.food.pk)
-            quantity = i.quantity
-            total_price = i.total_price
-            info = {
-                'pk': i.pk,
-                'store': store.name,
-                'food': food.name,
-                'quantity': quantity,
-                'total_price': total_price
-            }
-            data.append(info)
-        return data
+    # def get_item(self, obj):
+    #     data = []
+    #     for i in obj.item.filter(is_ordered=False):
+    #         store = Store.objects.get(foodcategory__food__pk=i.food.pk)
+    #         food = Food.objects.get(pk=i.food.pk)
+    #         quantity = i.quantity
+    #         total_price = i.total_price
+    #         info = {
+    #             'pk': i.pk,
+    #             'store': store.name,
+    #             'food': food.name,
+    #             'quantity': quantity,
+    #             'total_price': total_price
+    #         }
+    #         data.append(info)
+    #     return data
