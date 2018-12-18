@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import permissions, status, generics
+from rest_framework import permissions, status, generics, filters
 
 from store.models.food import Food, SideDishes
 from .models.order import Order
@@ -83,7 +83,7 @@ class OrderList(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        qs = Order.objects.all()
+        qs = Order.objects.all().order_by('-created_at')
         queryset = self.get_serializer_class().setup_eager_loading(qs)
         return queryset
 
