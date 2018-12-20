@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class StoreCategory(models.Model):
-    name = models.CharField(verbose_name='카테고리', max_length=20)
+    name = models.CharField(verbose_name='카테고리', max_length=50)
 
     def __str__(self):
         return self.name
@@ -23,7 +23,7 @@ class Store(models.Model):
         verbose_name='카테고리',
         null=True
     )
-    name = models.CharField(verbose_name='상점이름', max_length=50)
+    name = models.CharField(verbose_name='상점이름', max_length=100)
     store_info = models.TextField(verbose_name='상점소개', blank=True)
     origin_info = models.TextField(verbose_name='원산지 정보', blank=True)
     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)

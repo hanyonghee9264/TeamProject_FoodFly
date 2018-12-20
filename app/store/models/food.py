@@ -24,7 +24,7 @@ class Food(models.Model):
         on_delete=models.CASCADE,
         verbose_name='메뉴'
     )
-    name = models.CharField(verbose_name='음식이름', max_length=50)
+    name = models.CharField(verbose_name='음식이름', max_length=100)
     price = models.PositiveIntegerField(verbose_name='가격', default=0)
     stock = models.PositiveIntegerField(verbose_name='수량', default=0)
     created_at = models.DateTimeField(verbose_name='등록일', auto_now_add=True)
