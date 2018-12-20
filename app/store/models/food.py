@@ -3,7 +3,7 @@ from .store import Store
 
 
 class FoodCategory(models.Model):
-    name = models.CharField(verbose_name='음식분류', max_length=50)
+    name = models.CharField(verbose_name='음식분류', max_length=100)
     store = models.ForeignKey(
         Store,
         on_delete=models.CASCADE,
